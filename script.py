@@ -1,13 +1,12 @@
 import streamlit as st
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFacePipeline
 from langchain_core.prompts import PromptTemplate
 from langchain.schema.runnable import RunnablePassthrough
 from langchain_community.vectorstores import Pinecone
-from langchain_huggingface import HuggingFaceLLM
 from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
-from llama_index import GPTSimpleVectorIndex
 from huggingface_hub import login
+from transformers import pipeline
 import pinecone
 import os
 import tempfile
@@ -25,8 +24,8 @@ pinecone_client = pinecone.Index(index_name)
 
 # Model setup
 model_name = "mistralai/Mixtral-8x7B-v0.1"
-llm = HuggingFaceLLM(model_name=model_name)
-embeddings = HuggingFaceEmbeddings(model_name=model_name)
+huggingface_pipeline = pipeline("text-generation", model=model_name, device=0)  # Use GPU if available
+llm = HuggingFacePipeline(pipeline=huggingface_pipeline)
 
 # Streamlit UI
 st.set_page_config(page_title="RAG Chat Application")
@@ -48,7 +47,7 @@ if docs:
     st.sidebar.write("Indexing documents...")
     splitter = CharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
     chunks = splitter.split_text(all_text)
-    vectors = [embeddings.embed_text(chunk) for chunk in chunks]
+    vectors = [llm.pipeline.model.encode(chunk) for chunk in chunks]  # Use the model to encode chunks
     metadata = [{"text": chunk} for chunk in chunks]
 
     for vector, meta in zip(vectors, metadata):
@@ -61,7 +60,8 @@ st.header("Ask Questions")
 user_query = st.text_input("Enter your question:")
 if user_query:
     # Retrieve relevant documents
-    results = pinecone_client.query(embeddings.embed_text(user_query), top_k=5, include_metadata=True)
+    query_embedding = llm.pipeline.model.encode(user_query)  # Use the model to encode the query
+    results = pinecone_client.query(query_embedding, top_k=5, include_metadata=True)
     relevant_texts = [item["metadata"]["text"] for item in results["matches"]]
 
     # Formulate context
