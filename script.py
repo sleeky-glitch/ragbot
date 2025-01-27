@@ -90,7 +90,7 @@ st.header("Ask Questions")
 user_query = st.text_input("Enter your question:")
 if user_query:
     # Retrieve Relevant Documents
-    query_embedding = embeddings.embed_text(user_query)
+    query_embedding = embeddings.embed_query(user_query)
     results = pinecone_index.query(query_embedding, top_k=5, include_metadata=True)
     relevant_texts = [item["metadata"]["text"] for item in results["matches"]]
 
