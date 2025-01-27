@@ -65,7 +65,7 @@ if docs:
     st.sidebar.write("Indexing documents...")
     splitter = CharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
     chunks = splitter.split_text(all_text)
-    vectors = [embeddings.embed_text(chunk) for chunk in chunks]
+    vectors = embeddings.embed_documents(chunks)
     metadata = [{"text": chunk} for chunk in chunks]
 
     for vector, meta in zip(vectors, metadata):
