@@ -5,5 +5,4 @@ langchain-community
 llama-index
 huggingface-hub
 pinecone-client
-pypdf2
-tempfile
+pypdf2>=3.0.0
