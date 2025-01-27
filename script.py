@@ -17,7 +17,7 @@ from PyPDF2 import PdfReader
 login(token=st.secrets["huggingface_api_key"])
 
 # Pinecone setup
-pinecone.init(api_key=st.secrets["pinecone_api_key"], environment=st.secrets["pinecone_env"])
+pinecone.init(api_key=st.secrets["pinecone_api_key"])
 index_name = "rag-chat-index"
 if index_name not in pinecone.list_indexes():
     pinecone.create_index(index_name, dimension=768, metric="cosine")
