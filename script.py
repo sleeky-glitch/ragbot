@@ -33,7 +33,7 @@ if pinecone_index_name not in pinecone_client.list_indexes().names():
         spec=ServerlessSpec(cloud="aws", region="us-east-1"),
     )
 
-pinecone_index = pinecone_client.index(pinecone_index_name)
+pinecone_index = pinecone_client.Index(pinecone_index_name)
 
 # Hugging Face Model Setup
 repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
