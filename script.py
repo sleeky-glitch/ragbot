@@ -75,7 +75,7 @@ if docs:
 
 # Define Prompt Template
 template = """
-You are a chatbot for the Ahmedabad Government. Corporation workers will ask questions regarding the procedures in the GPMC act. 
+You are a chatbot for the Government. Corporation workers will ask questions regarding the procedures for uploading documents. 
 Answer these questions and give answers to process in a step-by-step process.
 If you don't know the answer, just say you don't know. 
 
